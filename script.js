@@ -43,6 +43,8 @@ const game = (function (playerOneName = "Jim",
 
     let activePlayer = playerOne;
 
+    const getActivePlayer = () => activePlayer;
+
     const switchPlayerTurn = () => {
         if (activePlayer === playerOne) {
             activePlayer = playerTwo;
@@ -121,6 +123,7 @@ const game = (function (playerOneName = "Jim",
             
                 if (checkForWinner === 'yes') {
                     gameboard.printBoard();
+                    displayController.updateScreen();
                     console.log(`GAME OVER. ${activePlayer.name} is the winner!`);
                     activePlayer = null;
                 } else {
@@ -133,10 +136,12 @@ const game = (function (playerOneName = "Jim",
                     }
                     if (!containsNull(allSquares)) {
                         gameboard.printBoard();
+                        displayController.updateScreen();
                         console.log(`GAME OVER. It's a draw!`);
                         activePlayer = null;
                     } else {
                         switchPlayerTurn();
+                        displayController.updateScreen();
                         printNewRound();
                     }
                 }
@@ -146,5 +151,32 @@ const game = (function (playerOneName = "Jim",
 
     printNewRound();
 
-    return { playRound };
+    return { playRound, getActivePlayer };
+})();
+
+const displayController = (function () {
+    const boardDiv = document.querySelector(".board");
+
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+        const board = gameboard.getBoard();
+
+        board.forEach((row, index) => {
+            let rowIndex = index;
+            row.forEach((square, index) => {
+                const newSquare = document.createElement("div");
+                newSquare.classList.add("square");
+                newSquare.dataset.row = rowIndex;
+                newSquare.dataset.column = index;
+                if (square !== null) {
+                    newSquare.textContent = `${square.toUpperCase()}`;
+                }
+                boardDiv.appendChild(newSquare);
+            })
+        })
+    }
+
+    updateScreen();
+
+    return { updateScreen };
 })();
