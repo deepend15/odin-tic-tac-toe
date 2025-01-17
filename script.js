@@ -58,8 +58,8 @@ const game = (function (playerOneName = "Jim",
         console.log(`${activePlayer.name}'s turn.`);
     };
 
-    let gameOver = "no";
-    const getGameOver = () => gameOver;
+    let gameStatus = "active";
+    const getGameStatus = () => gameStatus;
 
     const playRound = (row, column) => {
         if (activePlayer === null) {
@@ -67,8 +67,12 @@ const game = (function (playerOneName = "Jim",
         } else {
             let squareSelection = gameboard.selectSquare(row, column, activePlayer);
             if (squareSelection === false) {
-            printNewRound();
+                printNewRound();
+                gameStatus = "invalid selection";
+                displayController.updateScreen();
             } else {
+                gameStatus = "active";
+
                 console.log(`${activePlayer.name} selected row ${row}, column ${column}.`);
 
                 const firstRow = gameboard.getBoard()[0];
@@ -126,7 +130,7 @@ const game = (function (playerOneName = "Jim",
             
                 if (checkForWinner === 'yes') {
                     gameboard.printBoard();
-                    gameOver = "yes";
+                    gameStatus = "winner";
                     displayController.updateScreen();
                     console.log(`GAME OVER. ${activePlayer.name} is the winner!`);
                     activePlayer = null;
@@ -140,7 +144,7 @@ const game = (function (playerOneName = "Jim",
                     }
                     if (!containsNull(allSquares)) {
                         gameboard.printBoard();
-                        gameOver = "yes";
+                        gameStatus = "draw";
                         displayController.updateScreen();
                         console.log(`GAME OVER. It's a draw!`);
                         activePlayer = null;
@@ -156,15 +160,16 @@ const game = (function (playerOneName = "Jim",
 
     printNewRound();
 
-    return { playRound, getActivePlayer, getGameOver };
+    return { playRound, getActivePlayer, getGameStatus };
 })();
 
 const displayController = (function () {
     const boardDiv = document.querySelector(".board");
-    const turnDiv = document.querySelector(".turn");
+    const sideTextDiv = document.querySelector(".side-text");
 
     const updateScreen = () => {
         boardDiv.textContent = "";
+        sideTextDiv.textContent = "";
         const board = gameboard.getBoard();
 
         board.forEach((row, index) => {
@@ -189,13 +194,31 @@ const displayController = (function () {
             game.playRound(selectedRow, selectedColumn);
         }
 
-        if (game.getGameOver() === "no") {
+        if (game.getGameStatus() === "active" ||
+            game.getGameStatus() === "invalid selection") {
             squares.forEach((square) => {
                 square.addEventListener("click", squareClickHandler);
             })
         }
 
-        turnDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
+        if (game.getGameStatus() === "active") {
+            sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
+        } else if (game.getGameStatus() === "invalid selection") {
+            sideTextDiv.textContent = `Invalid selection! Try again, ${game.getActivePlayer().name}.`;
+        } else if (game.getGameStatus() === "draw" ||
+                   game.getGameStatus() === "winner") {
+            const firstLine = document.createElement("div");
+            firstLine.textContent = `GAME OVER`;
+            firstLine.classList.add("first-line");
+            sideTextDiv.appendChild(firstLine);
+            const secondLine = document.createElement("div");
+            if (game.getGameStatus() === "draw") {
+                secondLine.textContent = `It's a draw!`;
+            } else if (game.getGameStatus() === "winner") {
+                secondLine.textContent = `${game.getActivePlayer().name} is the winner!`;
+            };
+            sideTextDiv.appendChild(secondLine);
+        }
     }
 
     updateScreen();

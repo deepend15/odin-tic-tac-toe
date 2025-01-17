@@ -75,7 +75,14 @@ h1 {
     cursor: pointer;
 }
 
-.turn {
+.side-text {
     align-self: center;
     font-size: 2rem;
+    text-align: center;
+}
+
+.first-line {
+    font-weight: bold;
+    font-size: 2.2rem;
+    margin-bottom: 20px;
 }
