@@ -58,6 +58,9 @@ const game = (function (playerOneName = "Jim",
         console.log(`${activePlayer.name}'s turn.`);
     };
 
+    let gameOver = "no";
+    const getGameOver = () => gameOver;
+
     const playRound = (row, column) => {
         if (activePlayer === null) {
             console.log(`Refresh to start a new game!`);
@@ -123,6 +126,7 @@ const game = (function (playerOneName = "Jim",
             
                 if (checkForWinner === 'yes') {
                     gameboard.printBoard();
+                    gameOver = "yes";
                     displayController.updateScreen();
                     console.log(`GAME OVER. ${activePlayer.name} is the winner!`);
                     activePlayer = null;
@@ -136,6 +140,7 @@ const game = (function (playerOneName = "Jim",
                     }
                     if (!containsNull(allSquares)) {
                         gameboard.printBoard();
+                        gameOver = "yes";
                         displayController.updateScreen();
                         console.log(`GAME OVER. It's a draw!`);
                         activePlayer = null;
@@ -151,7 +156,7 @@ const game = (function (playerOneName = "Jim",
 
     printNewRound();
 
-    return { playRound, getActivePlayer };
+    return { playRound, getActivePlayer, getGameOver };
 })();
 
 const displayController = (function () {
@@ -175,6 +180,20 @@ const displayController = (function () {
                 boardDiv.appendChild(newSquare);
             })
         })
+
+        const squares = document.querySelectorAll(".square");
+
+        function squareClickHandler(e) {
+            const selectedRow = e.target.dataset.row;
+            const selectedColumn = e.target.dataset.column;
+            game.playRound(selectedRow, selectedColumn);
+        }
+
+        if (game.getGameOver() === "no") {
+            squares.forEach((square) => {
+                square.addEventListener("click", squareClickHandler);
+            })
+        }
 
         turnDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
     }
