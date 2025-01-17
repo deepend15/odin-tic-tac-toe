@@ -156,6 +156,7 @@ const game = (function (playerOneName = "Jim",
 
 const displayController = (function () {
     const boardDiv = document.querySelector(".board");
+    const turnDiv = document.querySelector(".turn");
 
     const updateScreen = () => {
         boardDiv.textContent = "";
@@ -174,6 +175,8 @@ const displayController = (function () {
                 boardDiv.appendChild(newSquare);
             })
         })
+
+        turnDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
     }
 
     updateScreen();

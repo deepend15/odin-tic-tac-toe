@@ -29,24 +29,30 @@ h1, h2, h3, h4, h5 {
 }
 
 .main-container {
-    padding: 20px 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
 }
 
 h1 {
     font-weight: bold;
     font-size: 2.4rem;
+    margin: 20px 0px 60px 0px;
+}
+
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 75px;
 }
 
 .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    width: 450px;
-    height: 450px;
+    width: 400px;
+    height: 400px;
 }
 
 .square[data-row="0"],
@@ -68,4 +74,9 @@ h1 {
 .square:hover {
     background-color: lightgray;
     cursor: pointer;
+}
+
+.turn {
+    align-self: center;
+    font-size: 2rem;
 }
