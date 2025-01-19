@@ -28,7 +28,242 @@ const gameboard = (function () {
 
     const printBoard = () => console.log(board);
 
-    return { getBoard, selectSquare, printBoard };
+    function createSquareObjects(board) {
+        function createSquare(row, column, token) {
+            return { row, column, token };
+        }
+        
+        const arr = [];
+
+        for (const row of board) {
+            for (let i = 0; i < row.length; i++) {
+                let newSquare = createSquare(board.indexOf(row), i, board[board.indexOf(row)][i]);
+                arr.push(newSquare);
+            }
+        }
+
+        return arr;
+    }
+
+    const getAllSquares = () => createSquareObjects(board);
+
+    function winningSquares(arr) {
+        function getMatchingRow(arr) {
+            function rowInstances(array) {
+                let rows = [];
+                for (const sq of array) {
+                    if (!rows.includes(sq.row)) {
+                        rows.push(sq.row);
+                    }
+                }
+                let numberOfRows = rows.length;
+                return numberOfRows;
+            }
+        
+            let rows = rowInstances(arr);
+        
+            let rowObjects = [];
+        
+            for (let i = 0; i < rows; i++) {
+                let rowSquares = [];
+                for (const sq of arr) {
+                    if (sq.row === i) {
+                        rowSquares.push(sq);
+                    };
+                }
+                rowObjects.push(rowSquares);
+            }
+        
+            let matchingRow = [];
+        
+            for (let array of rowObjects) {
+                let tokens = [];
+                for (let obj of array) {
+                    if (obj.token !== null) {
+                        tokens.push(obj.token);
+                        };
+                    };
+                let uniqueTokens = [];
+                if (tokens.length === 3) {
+                    for (let token of tokens) {
+                        if (!uniqueTokens.includes(token)) {
+                            uniqueTokens.push(token);
+                        };
+                    }
+                };
+                if (uniqueTokens.length === 1) {
+                    matchingRow = array;
+                    break;
+                } 
+            }
+        
+            if (matchingRow[0] === undefined) {
+                return 'none';
+            } else {
+                return matchingRow;
+            }
+        }
+    
+        function getMatchingColumn(arr) {
+            function columnInstances(array) {
+                let columns = [];
+                for (const sq of array) {
+                    if (!columns.includes(sq.column)) {
+                        columns.push(sq.column);
+                    }
+                }
+                let numberOfColumns = columns.length;
+                return numberOfColumns;
+            }
+        
+            let columns = columnInstances(arr);
+        
+            let columnObjects = [];
+        
+            for (let i = 0; i < columns; i++) {
+                let columnSquares = [];
+                for (const sq of arr) {
+                    if (sq.column === i) {
+                        columnSquares.push(sq);
+                    };
+                }
+                columnObjects.push(columnSquares);
+            }
+        
+            let matchingColumn = [];
+        
+            for (let array of columnObjects) {
+                let tokens = [];
+                for (let obj of array) {
+                    if (obj.token !== null) {
+                        tokens.push(obj.token);
+                        };
+                    };
+                let uniqueTokens = [];
+                if (tokens.length === 3) {
+                    for (let token of tokens) {
+                        if (!uniqueTokens.includes(token)) {
+                            uniqueTokens.push(token);
+                        };
+                    }
+                };
+                if (uniqueTokens.length === 1) {
+                    matchingColumn = array;
+                    break;
+                } 
+            }
+        
+            if (matchingColumn[0] === undefined) {
+                return 'none';
+            } else {
+                return matchingColumn;
+            }
+        }
+    
+        function getMatchingDiag(arr) {
+            function rowInstances(array) {
+                let rows = [];
+                for (const sq of array) {
+                    if (!rows.includes(sq.row)) {
+                        rows.push(sq.row);
+                    }
+                }
+                let numberOfRows = rows.length;
+                return numberOfRows;
+            }
+        
+            let rows = rowInstances(arr);
+        
+            let downDiagSquares = [];
+        
+            for (let i = 0; i < rows; i++) {
+                for (const sq of arr) {
+                    if (sq.row === i && sq.column === i) {
+                        downDiagSquares.push(sq);
+                    };
+                }
+            }
+        
+            let downDiagTokens = [];
+        
+            for (const sq of downDiagSquares) {
+                if (sq.token !== null) {
+                    downDiagTokens.push(sq.token);
+                };
+            }
+        
+            let downDiagUniqueTokens = [];
+        
+            if (downDiagTokens.length === 3) {
+                for (let token of downDiagTokens) {
+                    if (!downDiagUniqueTokens.includes(token)) {
+                        downDiagUniqueTokens.push(token);
+                    };
+                }
+            };
+        
+            const upDiagSquares = (function () {
+                let array = [];
+                let currentColumn = 2;
+                for (let i = 0; i < rows; i++) {
+                    for (const sq of arr) {
+                        if (sq.row === i && sq.column === currentColumn) {
+                            array.push(sq);
+                            currentColumn--;
+                        };
+                    }
+                }
+                return array;
+            })();
+        
+            let upDiagTokens = [];
+        
+            for (const sq of upDiagSquares) {
+                if (sq.token !== null) {
+                    upDiagTokens.push(sq.token);
+                };
+            }
+        
+            let upDiagUniqueTokens = [];
+        
+            if (upDiagTokens.length === 3) {
+                for (let token of upDiagTokens) {
+                    if (!upDiagUniqueTokens.includes(token)) {
+                        upDiagUniqueTokens.push(token);
+                    };
+                }
+            };
+        
+            if (downDiagUniqueTokens.length === 1) {
+                return downDiagSquares;
+            } else if (upDiagUniqueTokens.length === 1) {
+                return upDiagSquares;
+            } else {
+                return 'none';
+            }
+        }
+    
+        const winningRow = getMatchingRow(arr);
+        const winningColumn = getMatchingColumn(arr);
+        const winningDiag = getMatchingDiag(arr);
+    
+        const lines = [winningRow, winningColumn, winningDiag];
+    
+        let winningLine;
+    
+        for (const line of lines) {
+            if (line !== 'none') {
+                winningLine = line;     
+                break;   
+            }
+        }
+    
+        return winningLine;
+    }
+
+    const getWinningSquares = () => winningSquares(getAllSquares());
+
+    return { getBoard, selectSquare, printBoard, getWinningSquares };
 })();
 
 function createPlayer(name, token) {
@@ -117,9 +352,9 @@ const game = (function (playerOneName = "Jim",
 
                 const checkForWinner = (function () {
                     let winner = '';
-                    for (line of allLines) {
+                    for (const line of allLines) {
                         if (matches(line)) {
-                            winner = 'yes'
+                            winner = 'yes';
                             break;
                         } else {
                             winner = 'no';
@@ -205,8 +440,7 @@ const displayController = (function () {
             sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
         } else if (game.getGameStatus() === "invalid selection") {
             sideTextDiv.textContent = `Invalid selection! Try again, ${game.getActivePlayer().name}.`;
-        } else if (game.getGameStatus() === "draw" ||
-                   game.getGameStatus() === "winner") {
+        } else {
             const firstLine = document.createElement("div");
             firstLine.textContent = `GAME OVER`;
             firstLine.classList.add("first-line");
@@ -214,8 +448,30 @@ const displayController = (function () {
             const secondLine = document.createElement("div");
             if (game.getGameStatus() === "draw") {
                 secondLine.textContent = `It's a draw!`;
+                for (const square of squares) {
+                    square.classList.add("draw");
+                }
             } else if (game.getGameStatus() === "winner") {
                 secondLine.textContent = `${game.getActivePlayer().name} is the winner!`;
+                function inWinningLine(sq) {
+                    const winningSquares = gameboard.getWinningSquares();
+                    let answer = 'no';
+                    for (const square of winningSquares) {
+                        if (Number(sq.dataset.row) === square.row &&
+                            Number(sq.dataset.column) === square.column) {
+                                answer = 'yes';
+                                break;
+                            }
+                    }
+                    return answer;
+                }
+                for (const square of squares) {
+                    if (inWinningLine(square) === "yes") {
+                        square.classList.add("winner");
+                    } else {
+                        square.classList.add("loser");
+                    }
+                }
             };
             sideTextDiv.appendChild(secondLine);
         }
