@@ -310,66 +310,24 @@ const game = (function (playerOneName = "Jim",
 
                 console.log(`${activePlayer.name} selected row ${row}, column ${column}.`);
 
-                const firstRow = gameboard.getBoard()[0];
-                const secondRow = gameboard.getBoard()[1];
-                const thirdRow = gameboard.getBoard()[2];
-                const firstColumn = [firstRow[0], secondRow[0], thirdRow[0]];
-                const secondColumn = [firstRow[1], secondRow[1], thirdRow[1]];
-                const thirdColumn = [firstRow[2], secondRow[2], thirdRow[2]];
-                const downDiag = [firstRow[0], secondRow[1], thirdRow[2]];
-                const upDiag = [firstRow[2], secondRow[1], thirdRow[0]];
-
-                const allLines = [firstRow, secondRow, thirdRow, firstColumn, secondColumn, thirdColumn, downDiag, upDiag];
-
-                function containsNull(arr) {
-                    const nulls = [];
-                    for (const square of arr) {
-                        if (square === null) {
-                            nulls.push('null');
-                        }
-                    };
-                    return nulls[0] !== undefined;
-                }
-
-                function matches(line) {
-                    if (containsNull(line)) {
-                        return false;
-                    } else {
-                        let nonMatchingValue = [];
-                        for (let i = line.length - 1; i > 0; i--) {
-                            if (line[i] !== line[i - 1]) {
-                                nonMatchingValue.push(line[i]);
-                                break;
-                            }
-                        }
-                        if (nonMatchingValue[0] !== undefined) {
-                            return false;
-                        } else {
-                            return true;
-                        };
-                    }; 
-                }
-
-                const checkForWinner = (function () {
-                    let winner = '';
-                    for (const line of allLines) {
-                        if (matches(line)) {
-                            winner = 'yes';
-                            break;
-                        } else {
-                            winner = 'no';
-                        }
-                    }
-                    return winner;
-                })();
+                let winningSquares = gameboard.getWinningSquares();
             
-                if (checkForWinner === 'yes') {
+                if (winningSquares !== undefined) {
                     gameboard.printBoard();
                     gameStatus = "winner";
                     displayController.updateScreen();
                     console.log(`GAME OVER. ${activePlayer.name} is the winner!`);
                     activePlayer = null;
                 } else {
+                    function containsNull(arr) {
+                        const nulls = [];
+                        for (const square of arr) {
+                            if (square === null) {
+                                nulls.push('null');
+                            }
+                        };
+                        return nulls[0] !== undefined;
+                    }
                     let allSquares = [];
                     let board = gameboard.getBoard();
                     for (const row of board) {
