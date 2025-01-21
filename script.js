@@ -296,7 +296,7 @@ const game = (function (playerOneName = "Jim",
         console.log(`${activePlayer.name}'s turn.`);
     };
 
-    let gameStatus = "active";
+    let gameStatus = "new";
     const getGameStatus = () => gameStatus;
 
     const playRound = (row, column) => {
@@ -400,7 +400,10 @@ const displayController = (function () {
         }
 
         if (game.getGameStatus() === "new") {
-            console.log('lol');
+            const newGameButton = document.createElement("button");
+            newGameButton.classList.add("new-game-button");
+            newGameButton.textContent = `New Game`;
+            playerContainer.appendChild(newGameButton);
         } else {
             const player1 = document.createElement("div");
             player1.classList.add("player");

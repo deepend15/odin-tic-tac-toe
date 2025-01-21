@@ -37,7 +37,7 @@ h1, h2, h3, h4, h5 {
 
 h1 {
     font-weight: bold;
-    font-size: 2.4rem;
+    font-size: 2.6rem;
     margin-top: 20px;
 }
 
@@ -45,6 +45,26 @@ h1 {
     display: flex;
     width: 800px;
     justify-content: space-evenly;
+}
+
+.new-game-button {
+    padding: 18px 30px;
+    font-size: 2.2rem;
+    border-radius: 30px;
+    background-color: #1379ff;
+    color: white;
+    font-weight: 500;
+    border: 3px outset silver;
+}
+
+.new-game-button:hover {
+    background-color: #1067d8;
+}
+
+.new-game-button:active {
+    background-color: #105cbe;
+    border: 3px inset silver;
+
 }
 
 .player {
