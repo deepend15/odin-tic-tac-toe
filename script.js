@@ -439,7 +439,7 @@ const displayController = (function () {
         if (game.getGameStatus() === "active") {
             sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
         } else if (game.getGameStatus() === "invalid selection") {
-            sideTextDiv.textContent = `Invalid selection! Try again, ${game.getActivePlayer().name}.`;
+            sideTextDiv.textContent = `That square's taken! Try again, ${game.getActivePlayer().name}.`;
         } else {
             const firstLine = document.createElement("div");
             firstLine.textContent = `GAME OVER`;
