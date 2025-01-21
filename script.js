@@ -276,6 +276,9 @@ const game = (function (playerOneName = "Jim",
     const playerOne = createPlayer(playerOneName, 'x');
     const playerTwo = createPlayer(playerTwoName, 'o');
 
+    const getPlayerOne = () => playerOne;
+    const getPlayerTwo = () => playerTwo;
+
     let activePlayer = playerOne;
 
     const getActivePlayer = () => activePlayer;
@@ -353,15 +356,17 @@ const game = (function (playerOneName = "Jim",
 
     printNewRound();
 
-    return { playRound, getActivePlayer, getGameStatus };
+    return { playRound, getActivePlayer, getPlayerOne, getPlayerTwo, getGameStatus };
 })();
 
 const displayController = (function () {
     const boardDiv = document.querySelector(".board");
+    const playerContainer = document.querySelector(".player-container");
     const sideTextDiv = document.querySelector(".side-text");
 
     const updateScreen = () => {
         boardDiv.textContent = "";
+        playerContainer.textContent = "";
         sideTextDiv.textContent = "";
         const board = gameboard.getBoard();
 
@@ -394,11 +399,35 @@ const displayController = (function () {
             })
         }
 
+        if (game.getGameStatus() === "new") {
+            console.log('lol');
+        } else {
+            const player1 = document.createElement("div");
+            player1.classList.add("player");
+            playerContainer.appendChild(player1);
+            const player1Line1 = document.createElement("p");
+            player1Line1.textContent = `Player 1: \u00A0${game.getPlayerOne().name}`;
+            player1.appendChild(player1Line1);
+            const player1line2 = document.createElement("p");
+            player1line2.textContent = `"${game.getPlayerOne().token.toUpperCase()}"`;
+            player1.appendChild(player1line2);
+            const player2 = document.createElement("div");
+            player2.classList.add("player");
+            playerContainer.appendChild(player2);
+            const player2Line1 = document.createElement("p");
+            player2Line1.textContent = `Player 2: \u00A0${game.getPlayerTwo().name}`;
+            player2.appendChild(player2Line1);
+            const player2line2 = document.createElement("p");
+            player2line2.textContent = `"${game.getPlayerTwo().token.toUpperCase()}"`;
+            player2.appendChild(player2line2);
+        }
+
         if (game.getGameStatus() === "active") {
             sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
         } else if (game.getGameStatus() === "invalid selection") {
             sideTextDiv.textContent = `That square's taken! Try again, ${game.getActivePlayer().name}.`;
-        } else {
+        } else if (game.getGameStatus() === "winner" ||
+            game.getGameStatus() === "draw") {
             const firstLine = document.createElement("div");
             firstLine.textContent = `GAME OVER`;
             firstLine.classList.add("first-line");
