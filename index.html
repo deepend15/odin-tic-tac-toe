@@ -10,16 +10,28 @@
 <body>
     <div class="main-container">
         <h1>Tic Tac Toe</h1>
-        <div class="player-container">
-            <!-- <div class="player">
-                <p>Player 1: &nbsp;Jim</p>
-                <p>"X"</p>
-            </div>
-            <div class="player">
-                <p>Player 2: &nbsp;Bob</p>
-                <p>"O"</p>
-            </div> -->
-        </div>
+        <dialog id="new-game-dialog">
+            <form action="" method="">
+                <fieldset>
+                    <legend>Player One</legend>
+                    <p class="name-line">
+                        <label for="p1-name">Name:</label>
+                        <input type="text" id="p1-name" name="p1-name" placeholder="Player 1" required>
+                    </p>
+                    <p>Symbol: "X"</p>
+                </fieldset>
+                <fieldset>
+                    <legend>Player Two</legend>
+                    <p class="name-line">
+                        <label for="p2-name">Name:</label>
+                        <input type="text" id="p2-name" name="p2-name" placeholder="Player 2" required>
+                    </p>
+                    <p>Symbol: "O"</p>
+                </fieldset>
+                <button>OK</button>
+            </form>
+        </dialog>
+        <div class="player-container"></div>
         <div class="game-container">
             <div class="board"></div>
             <div class="side-text"></div>

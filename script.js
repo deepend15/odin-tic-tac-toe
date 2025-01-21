@@ -361,7 +361,9 @@ const game = (function (playerOneName = "Jim",
 
 const displayController = (function () {
     const boardDiv = document.querySelector(".board");
+    const newGameDialog = document.querySelector("#new-game-dialog");
     const playerContainer = document.querySelector(".player-container");
+    const gameContainer = document.querySelector(".game-container");
     const sideTextDiv = document.querySelector(".side-text");
 
     const updateScreen = () => {
@@ -404,6 +406,9 @@ const displayController = (function () {
             newGameButton.classList.add("new-game-button");
             newGameButton.textContent = `New Game`;
             playerContainer.appendChild(newGameButton);
+            newGameButton.addEventListener("click", () => {
+                newGameDialog.showModal();
+            })
         } else {
             const player1 = document.createElement("div");
             player1.classList.add("player");
@@ -425,45 +430,48 @@ const displayController = (function () {
             player2.appendChild(player2line2);
         }
 
-        if (game.getGameStatus() === "active") {
-            sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
-        } else if (game.getGameStatus() === "invalid selection") {
-            sideTextDiv.textContent = `That square's taken! Try again, ${game.getActivePlayer().name}.`;
-        } else if (game.getGameStatus() === "winner" ||
-            game.getGameStatus() === "draw") {
-            const firstLine = document.createElement("div");
-            firstLine.textContent = `GAME OVER`;
-            firstLine.classList.add("first-line");
-            sideTextDiv.appendChild(firstLine);
-            const secondLine = document.createElement("div");
-            if (game.getGameStatus() === "draw") {
-                secondLine.textContent = `It's a draw!`;
-                for (const square of squares) {
-                    square.classList.add("draw");
-                }
-            } else if (game.getGameStatus() === "winner") {
-                secondLine.textContent = `${game.getActivePlayer().name} is the winner!`;
-                function inWinningLine(sq) {
-                    const winningSquares = gameboard.getWinningSquares();
-                    let answer = 'no';
-                    for (const square of winningSquares) {
-                        if (Number(sq.dataset.row) === square.row &&
-                            Number(sq.dataset.column) === square.column) {
-                                answer = 'yes';
-                                break;
-                            }
+        if (game.getGameStatus() !== "new") {
+            gameContainer.classList.add("active-game");
+            if (game.getGameStatus() === "active") {
+                sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
+            } else if (game.getGameStatus() === "invalid selection") {
+                sideTextDiv.textContent = `That square's taken! Try again, ${game.getActivePlayer().name}.`;
+            } else if (game.getGameStatus() === "winner" ||
+                game.getGameStatus() === "draw") {
+                const firstLine = document.createElement("div");
+                firstLine.textContent = `GAME OVER`;
+                firstLine.classList.add("first-line");
+                sideTextDiv.appendChild(firstLine);
+                const secondLine = document.createElement("div");
+                if (game.getGameStatus() === "draw") {
+                    secondLine.textContent = `It's a draw!`;
+                    for (const square of squares) {
+                        square.classList.add("draw");
                     }
-                    return answer;
-                }
-                for (const square of squares) {
-                    if (inWinningLine(square) === "yes") {
-                        square.classList.add("winner");
-                    } else {
-                        square.classList.add("loser");
+                } else if (game.getGameStatus() === "winner") {
+                    secondLine.textContent = `${game.getActivePlayer().name} is the winner!`;
+                    function inWinningLine(sq) {
+                        const winningSquares = gameboard.getWinningSquares();
+                        let answer = 'no';
+                        for (const square of winningSquares) {
+                            if (Number(sq.dataset.row) === square.row &&
+                                Number(sq.dataset.column) === square.column) {
+                                    answer = 'yes';
+                                    break;
+                                }
+                        }
+                        return answer;
                     }
-                }
-            };
-            sideTextDiv.appendChild(secondLine);
+                    for (const square of squares) {
+                        if (inWinningLine(square) === "yes") {
+                            square.classList.add("winner");
+                        } else {
+                            square.classList.add("loser");
+                        }
+                    }
+                };
+                sideTextDiv.appendChild(secondLine);
+            }
         }
     }
 
