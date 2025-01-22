@@ -76,7 +76,7 @@ button:active {
 }
 
 #new-game-dialog {
-    padding: 40px 40px 20px 40px;
+    padding: 40px 40px 25px 40px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -117,8 +117,12 @@ fieldset > p {
     border-color: rgb(47, 106, 160);
 }
 
-form > button {
-    justify-self: center;
+.modal-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+form button {
     padding: 5px 20px;
     border-radius: 12px;
 }
