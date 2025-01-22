@@ -194,6 +194,7 @@ dialog button {
 
 .winner {
     color: green;
+    font-weight: 500;
 }
 
 .loser,

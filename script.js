@@ -26,8 +26,6 @@ const gameboard = (function () {
         }
     }
 
-    const printBoard = () => console.log(board);
-
     function createSquareObjects(board) {
         function createSquare(row, column, token) {
             return { row, column, token };
@@ -271,7 +269,7 @@ const gameboard = (function () {
 
     const getWinningSquares = () => winningSquares(getAllSquares());
 
-    return { getBoard, selectSquare, printBoard, getWinningSquares, clearBoard };
+    return { getBoard, selectSquare, getWinningSquares, clearBoard };
 })();
 
 function createPlayer(name, token) {
@@ -312,53 +310,41 @@ const game = (function () {
     }
 
     const playRound = (row, column) => {
-        if (activePlayer === null) {
-            console.log(`Refresh to start a new game!`);
+        let squareSelection = gameboard.selectSquare(row, column, activePlayer);
+        if (squareSelection === false) {
+            gameStatus = "invalid selection";
+            displayController.updateScreen();
         } else {
-            let squareSelection = gameboard.selectSquare(row, column, activePlayer);
-            if (squareSelection === false) {
-                gameStatus = "invalid selection";
+            gameStatus = "active";
+
+            let winningSquares = gameboard.getWinningSquares();
+        
+            if (winningSquares !== undefined) {
+                gameStatus = "winner";
                 displayController.updateScreen();
             } else {
-                gameStatus = "active";
-
-                console.log(`${activePlayer.name} selected row ${row}, column ${column}.`);
-
-                let winningSquares = gameboard.getWinningSquares();
-            
-                if (winningSquares !== undefined) {
-                    gameboard.printBoard();
-                    gameStatus = "winner";
+                function containsNull(arr) {
+                    const nulls = [];
+                    for (const square of arr) {
+                        if (square === null) {
+                            nulls.push('null');
+                        }
+                    };
+                    return nulls[0] !== undefined;
+                }
+                let allSquares = [];
+                let board = gameboard.getBoard();
+                for (const row of board) {
+                    for (const square of row) {
+                        allSquares.push(square);
+                    };
+                }
+                if (!containsNull(allSquares)) {
+                    gameStatus = "draw";
                     displayController.updateScreen();
-                    console.log(`GAME OVER. ${activePlayer.name} is the winner!`);
-                    activePlayer = null;
                 } else {
-                    function containsNull(arr) {
-                        const nulls = [];
-                        for (const square of arr) {
-                            if (square === null) {
-                                nulls.push('null');
-                            }
-                        };
-                        return nulls[0] !== undefined;
-                    }
-                    let allSquares = [];
-                    let board = gameboard.getBoard();
-                    for (const row of board) {
-                        for (const square of row) {
-                            allSquares.push(square);
-                        };
-                    }
-                    if (!containsNull(allSquares)) {
-                        gameboard.printBoard();
-                        gameStatus = "draw";
-                        displayController.updateScreen();
-                        console.log(`GAME OVER. It's a draw!`);
-                        activePlayer = null;
-                    } else {
-                        switchPlayerTurn();
-                        displayController.updateScreen();
-                    }
+                    switchPlayerTurn();
+                    displayController.updateScreen();
                 }
             }
         }
