@@ -412,9 +412,19 @@ const displayController = (function () {
             game.playRound(selectedRow, selectedColumn);
         }
 
+        function defaultPlayerNames() {
+            if (p1NameInput.value === '') {
+                p1NameInput.value = 'Player 1';
+            };
+            if (p2NameInput.value === '') {
+                p2NameInput.value = 'Player 2';
+            };
+        }
+
         function activateSamePlayersModal() {
             samePlayersDialog.showModal();
             yesBtn.addEventListener("click", () => {
+                defaultPlayerNames();
                 samePlayersDialog.close("yes");
             });
             noBtn.addEventListener("click", () => {
@@ -449,14 +459,6 @@ const displayController = (function () {
                 };
             };
             window.addEventListener("keydown", dialogEscapeAndEnterBtns);
-            function defaultPlayerNames() {
-                if (p1NameInput.value === '') {
-                    p1NameInput.value = 'Player 1';
-                };
-                if (p2NameInput.value === '') {
-                    p2NameInput.value = 'Player 2';
-                };
-            };
             cancelBtn.addEventListener("click", (e) => {
                 e.preventDefault();
                 newGameDialog.close("cancel");
