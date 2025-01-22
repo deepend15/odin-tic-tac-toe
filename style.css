@@ -83,6 +83,10 @@ dialog {
 
 }
 
+::backdrop {
+    background-color: rgb(0, 0, 0, 0.4);
+}
+
 #new-game-dialog > form > fieldset {
     padding: 30px;
 }

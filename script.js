@@ -47,6 +47,14 @@ const gameboard = (function () {
 
     const getAllSquares = () => createSquareObjects(board);
 
+    const clearBoard = () => {
+        for (let row of board) {
+            for (let i = 0; i < row.length; i++) {
+                row[i] = null;
+            }
+        }
+    };
+
     function winningSquares(arr) {
         function getMatchingRow(arr) {
             function rowInstances(array) {
@@ -263,7 +271,7 @@ const gameboard = (function () {
 
     const getWinningSquares = () => winningSquares(getAllSquares());
 
-    return { getBoard, selectSquare, printBoard, getWinningSquares };
+    return { getBoard, selectSquare, printBoard, getWinningSquares, clearBoard };
 })();
 
 function createPlayer(name, token) {
@@ -291,6 +299,8 @@ const game = (function () {
     const getGameStatus = () => gameStatus;
 
     const startGame = (playerOneName, playerTwoName) => {
+        gameboard.clearBoard();
+
         playerOne = createPlayer(playerOneName, 'x');
         playerTwo = createPlayer(playerTwoName, 'o');
 
@@ -402,6 +412,66 @@ const displayController = (function () {
             game.playRound(selectedRow, selectedColumn);
         }
 
+        function activateSamePlayersModal() {
+            samePlayersDialog.showModal();
+            yesBtn.addEventListener("click", () => {
+                samePlayersDialog.close("yes");
+            });
+            noBtn.addEventListener("click", () => {
+                samePlayersDialog.close("no");
+            })
+            samePlayersCancelBtn.addEventListener("click", () => {
+                samePlayersDialog.close("cancel");
+            });
+            samePlayersDialog.addEventListener("close", () => {
+                if (samePlayersDialog.returnValue === "yes") {
+                    game.startGame(p1NameInput.value, p2NameInput.value);
+                } else if (samePlayersDialog.returnValue === "cancel") {
+                    return;
+                } else if (samePlayersDialog.returnValue === "no") {
+                    activateNewGameModal();
+                };
+            });
+        }
+
+        function activateNewGameModal() {
+            newGameDialog.showModal();
+            p1NameInput.value = '';
+            p2NameInput.value = '';
+            newGameDialog.returnValue = '';
+            function dialogEscapeAndEnterBtns(e) {
+                let clickEvent = new MouseEvent("click");
+                if (e.key === "Escape") {
+                    newGameDialog.returnValue = "cancel";
+                } else if (e.key === "Enter") {
+                    e.preventDefault();
+                    okBtn.dispatchEvent(clickEvent);
+                };
+            };
+            window.addEventListener("keydown", dialogEscapeAndEnterBtns);
+            function defaultPlayerNames() {
+                if (p1NameInput.value === '') {
+                    p1NameInput.value = 'Player 1';
+                };
+                if (p2NameInput.value === '') {
+                    p2NameInput.value = 'Player 2';
+                };
+            };
+            cancelBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                newGameDialog.close("cancel");
+            });
+            okBtn.addEventListener("click", defaultPlayerNames);
+            newGameDialog.addEventListener("close", () => {
+                window.removeEventListener("keydown", dialogEscapeAndEnterBtns);
+                if (newGameDialog.returnValue === "cancel") {
+                    return;
+                } else {
+                    game.startGame(p1NameInput.value, p2NameInput.value);
+                };
+            });
+        }
+
         if (game.getGameStatus() === "active" ||
             game.getGameStatus() === "invalid selection") {
             squares.forEach((square) => {
@@ -414,43 +484,7 @@ const displayController = (function () {
             newGameButton.classList.add("new-game-button");
             newGameButton.textContent = `New Game`;
             playerContainer.appendChild(newGameButton);
-            function dialogEscapeAndEnterBtns(e) {
-                let clickEvent = new MouseEvent("click");
-                if (e.key === "Escape") {
-                    newGameDialog.returnValue = "cancel";
-                } else if (e.key === "Enter") {
-                    e.preventDefault();
-                    okBtn.dispatchEvent(clickEvent);
-                };
-            };
-            newGameButton.addEventListener("click", () => {
-                newGameDialog.showModal();
-                p1NameInput.value = '';
-                p2NameInput.value = '';
-                newGameDialog.returnValue = '';
-                window.addEventListener("keydown", dialogEscapeAndEnterBtns);
-            });
-            function defaultPlayerNames() {
-                if (p1NameInput.value === '') {
-                    p1NameInput.value = 'Player 1';
-                };
-                if (p2NameInput.value === '') {
-                    p2NameInput.value = 'Player 2';
-                };
-            };
-            cancelBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                newGameDialog.close("cancel");
-            })
-            okBtn.addEventListener("click", defaultPlayerNames);
-            newGameDialog.addEventListener("close", () => {
-                window.removeEventListener("keydown", dialogEscapeAndEnterBtns);
-                if (newGameDialog.returnValue === "cancel") {
-                    return;
-                } else {
-                    game.startGame(p1NameInput.value, p2NameInput.value);
-                };
-            })
+            newGameButton.addEventListener("click", activateNewGameModal);
         } else {
             const player1 = document.createElement("div");
             player1.classList.add("player");
@@ -480,6 +514,7 @@ const displayController = (function () {
                 restartButton.classList.add("new-game-button");
                 restartButton.textContent = `Restart Game`;
                 restartDiv.appendChild(restartButton);
+                restartButton.addEventListener("click", activateSamePlayersModal);
                 }
             if (game.getGameStatus() === "active") {
                 sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
@@ -525,21 +560,7 @@ const displayController = (function () {
                 newGameButton.classList.add("after-game");
                 newGameButton.textContent = `New Game`;
                 sideTextDiv.appendChild(newGameButton);
-                newGameButton.addEventListener("click", () => {
-                    samePlayersDialog.showModal();
-                });
-                yesBtn.addEventListener("click", () => {
-                    samePlayersDialog.close("yes");
-                })
-                noBtn.addEventListener("click", () => {
-                    samePlayersDialog.close("no");
-                })
-                samePlayersCancelBtn.addEventListener("click", () => {
-                    samePlayersDialog.close("cancel");
-                })
-                samePlayersDialog.addEventListener("close", () => {
-
-                })
+                newGameButton.addEventListener("click", activateSamePlayersModal);
             }
         }
     }
