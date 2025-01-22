@@ -426,10 +426,10 @@ const displayController = (function () {
             samePlayersDialog.addEventListener("close", () => {
                 if (samePlayersDialog.returnValue === "yes") {
                     game.startGame(p1NameInput.value, p2NameInput.value);
-                } else if (samePlayersDialog.returnValue === "cancel") {
-                    return;
                 } else if (samePlayersDialog.returnValue === "no") {
                     activateNewGameModal();
+                } else {
+                    return;
                 };
             });
         }
