@@ -195,3 +195,7 @@ form button {
 .draw {
     color: gray;
 }
+
+.after-game {
+    margin-top: 40px;
+}

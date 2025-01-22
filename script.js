@@ -507,6 +507,11 @@ const displayController = (function () {
                     }
                 };
                 sideTextDiv.appendChild(secondLine);
+                const newGameButton = document.createElement("button");
+                newGameButton.classList.add("new-game-button");
+                newGameButton.classList.add("after-game");
+                newGameButton.textContent = `New Game`;
+                sideTextDiv.appendChild(newGameButton);
             }
         }
     }
