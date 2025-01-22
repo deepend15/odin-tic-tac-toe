@@ -367,11 +367,17 @@ const displayController = (function () {
     const playerContainer = document.querySelector(".player-container");
     const gameContainer = document.querySelector(".game-container");
     const sideTextDiv = document.querySelector(".side-text");
+    const restartDiv = document.querySelector(".restart");
+    const samePlayersDialog = document.querySelector("#same-players-dialog");
+    const yesBtn = document.querySelector(".yes-button");
+    const noBtn = document.querySelector(".no-button");
+    const samePlayersCancelBtn = document.querySelector(".same-players-cancel-button");
 
     const updateScreen = () => {
         boardDiv.textContent = "";
         playerContainer.textContent = "";
         sideTextDiv.textContent = "";
+        restartDiv.textContent = "";
         const board = gameboard.getBoard();
 
         board.forEach((row, index) => {
@@ -468,12 +474,19 @@ const displayController = (function () {
 
         if (game.getGameStatus() !== "new") {
             gameContainer.classList.add("active-game");
+            if (game.getGameStatus() === "active" ||
+                game.getGameStatus() === "invalid selection") {
+                const restartButton = document.createElement("button");
+                restartButton.classList.add("new-game-button");
+                restartButton.textContent = `Restart Game`;
+                restartDiv.appendChild(restartButton);
+                }
             if (game.getGameStatus() === "active") {
                 sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
             } else if (game.getGameStatus() === "invalid selection") {
                 sideTextDiv.textContent = `That square's taken! Try again, ${game.getActivePlayer().name}.`;
             } else if (game.getGameStatus() === "winner" ||
-                game.getGameStatus() === "draw") {
+                       game.getGameStatus() === "draw") {
                 const firstLine = document.createElement("div");
                 firstLine.textContent = `GAME OVER`;
                 firstLine.classList.add("first-line");
@@ -512,6 +525,21 @@ const displayController = (function () {
                 newGameButton.classList.add("after-game");
                 newGameButton.textContent = `New Game`;
                 sideTextDiv.appendChild(newGameButton);
+                newGameButton.addEventListener("click", () => {
+                    samePlayersDialog.showModal();
+                });
+                yesBtn.addEventListener("click", () => {
+                    samePlayersDialog.close("yes");
+                })
+                noBtn.addEventListener("click", () => {
+                    samePlayersDialog.close("no");
+                })
+                samePlayersCancelBtn.addEventListener("click", () => {
+                    samePlayersDialog.close("cancel");
+                })
+                samePlayersDialog.addEventListener("close", () => {
+
+                })
             }
         }
     }

@@ -75,11 +75,12 @@ button:active {
     font-weight: 500;
 }
 
-#new-game-dialog {
-    padding: 40px 40px 25px 40px;
+dialog {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    padding: 40px 40px 25px 40px;
+
 }
 
 #new-game-dialog > form > fieldset {
@@ -122,7 +123,7 @@ fieldset > p {
     justify-content: space-evenly;
 }
 
-form button {
+dialog button {
     padding: 5px 20px;
     border-radius: 12px;
 }
@@ -198,4 +199,24 @@ form button {
 
 .after-game {
     margin-top: 40px;
+}
+
+.dialog-container {
+    display: grid;
+    place-items: center;
+    gap: 25px;
+}
+
+.dialog-container > p {
+    margin-bottom: 25px;
+}
+
+.same-players-buttons {
+    display: flex;
+    gap: 35px;
+}
+
+.dialog-container > button {
+    padding: 5px 16px;
+    font-size: 1.4rem;
 }
