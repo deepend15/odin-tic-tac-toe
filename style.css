@@ -176,7 +176,7 @@ dialog button {
     font-size: 5rem;
 }
 
-.square:hover {
+.hover {
     background-color: lightgray;
     cursor: pointer;
 }

@@ -412,6 +412,19 @@ const displayController = (function () {
             game.playRound(selectedRow, selectedColumn);
         }
 
+        function toggleSquareHover(e) {
+            e.target.classList.toggle("hover");
+        }
+
+        if (game.getGameStatus() === "active" ||
+            game.getGameStatus() === "invalid selection") {
+                squares.forEach((square) => {
+                    square.addEventListener("click", squareClickHandler);
+                    square.addEventListener("mouseover", toggleSquareHover);
+                    square.addEventListener("mouseout", toggleSquareHover);
+                })
+        }
+
         function defaultPlayerNames() {
             if (p1NameInput.value === '') {
                 p1NameInput.value = 'Player 1';
@@ -419,29 +432,6 @@ const displayController = (function () {
             if (p2NameInput.value === '') {
                 p2NameInput.value = 'Player 2';
             };
-        }
-
-        function activateSamePlayersModal() {
-            samePlayersDialog.showModal();
-            yesBtn.addEventListener("click", () => {
-                defaultPlayerNames();
-                samePlayersDialog.close("yes");
-            });
-            noBtn.addEventListener("click", () => {
-                samePlayersDialog.close("no");
-            })
-            samePlayersCancelBtn.addEventListener("click", () => {
-                samePlayersDialog.close("cancel");
-            });
-            samePlayersDialog.addEventListener("close", () => {
-                if (samePlayersDialog.returnValue === "yes") {
-                    game.startGame(p1NameInput.value, p2NameInput.value);
-                } else if (samePlayersDialog.returnValue === "no") {
-                    activateNewGameModal();
-                } else {
-                    return;
-                };
-            });
         }
 
         function activateNewGameModal() {
@@ -474,11 +464,27 @@ const displayController = (function () {
             });
         }
 
-        if (game.getGameStatus() === "active" ||
-            game.getGameStatus() === "invalid selection") {
-            squares.forEach((square) => {
-                square.addEventListener("click", squareClickHandler);
+        function activateSamePlayersModal() {
+            samePlayersDialog.showModal();
+            yesBtn.addEventListener("click", () => {
+                defaultPlayerNames();
+                samePlayersDialog.close("yes");
+            });
+            noBtn.addEventListener("click", () => {
+                samePlayersDialog.close("no");
             })
+            samePlayersCancelBtn.addEventListener("click", () => {
+                samePlayersDialog.close("cancel");
+            });
+            samePlayersDialog.addEventListener("close", () => {
+                if (samePlayersDialog.returnValue === "yes") {
+                    game.startGame(p1NameInput.value, p2NameInput.value);
+                } else if (samePlayersDialog.returnValue === "no") {
+                    activateNewGameModal();
+                } else {
+                    return;
+                };
+            });
         }
 
         if (game.getGameStatus() === "new") {
