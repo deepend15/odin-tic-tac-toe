@@ -438,11 +438,11 @@ const displayController = (function () {
             })
             okBtn.addEventListener("click", defaultPlayerNames);
             newGameDialog.addEventListener("close", () => {
+                window.removeEventListener("keydown", dialogEscapeAndEnterBtns);
                 if (newGameDialog.returnValue === "cancel") {
-                    window.removeEventListener("keydown", dialogEscapeAndEnterBtns);
+                    return;
                 } else {
                     game.startGame(p1NameInput.value, p2NameInput.value);
-                    window.removeEventListener("keydown", dialogEscapeAndEnterBtns);
                 };
             })
         } else {
