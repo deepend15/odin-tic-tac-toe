@@ -192,6 +192,12 @@ dialog button {
     margin-bottom: 20px;
 }
 
+.restart {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
 .winner {
     color: green;
     font-weight: 500;
@@ -202,26 +208,8 @@ dialog button {
     color: gray;
 }
 
-.after-game {
+.end-game-buttons {
     margin-top: 40px;
-}
-
-.dialog-container {
     display: grid;
-    place-items: center;
     gap: 25px;
-}
-
-.dialog-container > p {
-    margin-bottom: 25px;
-}
-
-.same-players-buttons {
-    display: flex;
-    gap: 35px;
-}
-
-.dialog-container > button {
-    padding: 5px 16px;
-    font-size: 1.4rem;
 }

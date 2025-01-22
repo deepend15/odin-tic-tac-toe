@@ -13,15 +13,9 @@ const gameboard = (function () {
     const getBoard = () => board;
 
     const selectSquare = (row, column, player) => {
-        if (row > board.length - 1 ||
-            column > board[0].length - 1 ||
-            (row || column) < 0) {
-            console.log(`Invalid selection. Try again.`);
-            return false;
-        } else if (board[row][column] === null) {
+        if (board[row][column] === null) {
             board[row][column] = player.token;
         } else {
-            console.log(`You can't select that square! Try again.`);
             return false;
         }
     }
@@ -364,10 +358,6 @@ const displayController = (function () {
     const gameContainer = document.querySelector(".game-container");
     const sideTextDiv = document.querySelector(".side-text");
     const restartDiv = document.querySelector(".restart");
-    const samePlayersDialog = document.querySelector("#same-players-dialog");
-    const yesBtn = document.querySelector(".yes-button");
-    const noBtn = document.querySelector(".no-button");
-    const samePlayersCancelBtn = document.querySelector(".same-players-cancel-button");
 
     const updateScreen = () => {
         boardDiv.textContent = "";
@@ -450,29 +440,6 @@ const displayController = (function () {
             });
         }
 
-        function activateSamePlayersModal() {
-            samePlayersDialog.showModal();
-            yesBtn.addEventListener("click", () => {
-                defaultPlayerNames();
-                samePlayersDialog.close("yes");
-            });
-            noBtn.addEventListener("click", () => {
-                samePlayersDialog.close("no");
-            })
-            samePlayersCancelBtn.addEventListener("click", () => {
-                samePlayersDialog.close("cancel");
-            });
-            samePlayersDialog.addEventListener("close", () => {
-                if (samePlayersDialog.returnValue === "yes") {
-                    game.startGame(p1NameInput.value, p2NameInput.value);
-                } else if (samePlayersDialog.returnValue === "no") {
-                    activateNewGameModal();
-                } else {
-                    return;
-                };
-            });
-        }
-
         if (game.getGameStatus() === "new") {
             const newGameButton = document.createElement("button");
             newGameButton.classList.add("new-game-button");
@@ -508,8 +475,16 @@ const displayController = (function () {
                 restartButton.classList.add("new-game-button");
                 restartButton.textContent = `Restart Game`;
                 restartDiv.appendChild(restartButton);
-                restartButton.addEventListener("click", activateSamePlayersModal);
-                }
+                restartButton.addEventListener("click", () => {
+                    defaultPlayerNames();
+                    game.startGame(p1NameInput.value, p2NameInput.value);
+                });
+                const changePlayersButton = document.createElement("button");
+                changePlayersButton.classList.add("new-game-button");
+                changePlayersButton.textContent = `Change Players`;
+                restartDiv.appendChild(changePlayersButton);
+                changePlayersButton.addEventListener("click", activateNewGameModal);
+            }
             if (game.getGameStatus() === "active") {
                 sideTextDiv.textContent = `${game.getActivePlayer().name}'s turn.`;
             } else if (game.getGameStatus() === "invalid selection") {
@@ -549,12 +524,22 @@ const displayController = (function () {
                     }
                 };
                 sideTextDiv.appendChild(secondLine);
+                const endGameButtons = document.createElement("div");
+                endGameButtons.classList.add("end-game-buttons");
+                sideTextDiv.appendChild(endGameButtons);
                 const newGameButton = document.createElement("button");
                 newGameButton.classList.add("new-game-button");
-                newGameButton.classList.add("after-game");
                 newGameButton.textContent = `New Game`;
-                sideTextDiv.appendChild(newGameButton);
-                newGameButton.addEventListener("click", activateSamePlayersModal);
+                endGameButtons.appendChild(newGameButton);
+                newGameButton.addEventListener("click", () => {
+                    defaultPlayerNames();
+                    game.startGame(p1NameInput.value, p2NameInput.value);
+                });
+                const changePlayersButton = document.createElement("button");
+                changePlayersButton.classList.add("new-game-button");
+                changePlayersButton.textContent = `Change Players`;
+                endGameButtons.appendChild(changePlayersButton);
+                changePlayersButton.addEventListener("click", activateNewGameModal);
             }
         }
     }
