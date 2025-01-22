@@ -410,6 +410,15 @@ const displayController = (function () {
             };
         }
 
+        function restartDefaultPlayerNames() {
+            if (p1NameInput.value === '') {
+                p1NameInput.value = `${game.getPlayerOne().name}`;
+            };
+            if (p2NameInput.value === '') {
+                p2NameInput.value = `${game.getPlayerTwo().name}`;
+            };
+        }
+
         function activateNewGameModal() {
             newGameDialog.showModal();
             p1NameInput.value = '';
@@ -476,7 +485,7 @@ const displayController = (function () {
                 restartButton.textContent = `Restart Game`;
                 restartDiv.appendChild(restartButton);
                 restartButton.addEventListener("click", () => {
-                    defaultPlayerNames();
+                    restartDefaultPlayerNames();
                     game.startGame(p1NameInput.value, p2NameInput.value);
                 });
                 const changePlayersButton = document.createElement("button");
@@ -532,7 +541,7 @@ const displayController = (function () {
                 newGameButton.textContent = `New Game`;
                 endGameButtons.appendChild(newGameButton);
                 newGameButton.addEventListener("click", () => {
-                    defaultPlayerNames();
+                    restartDefaultPlayerNames();
                     game.startGame(p1NameInput.value, p2NameInput.value);
                 });
                 const changePlayersButton = document.createElement("button");
