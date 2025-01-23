@@ -442,6 +442,8 @@ const displayController = (function () {
             newGameDialog.addEventListener("close", () => {
                 window.removeEventListener("keydown", dialogEscapeAndEnterBtns);
                 if (newGameDialog.returnValue === "cancel") {
+                    p1NameInput.value = '';
+                    p2NameInput.value = '';
                     return;
                 } else {
                     game.startGame(p1NameInput.value, p2NameInput.value);
