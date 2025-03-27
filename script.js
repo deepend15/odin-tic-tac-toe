@@ -424,23 +424,19 @@ const displayController = (function () {
             p1NameInput.value = '';
             p2NameInput.value = '';
             newGameDialog.returnValue = '';
-            function dialogEscapeAndEnterBtns(e) {
-                let clickEvent = new MouseEvent("click");
+            function dialogEscapeBtn(e) {
                 if (e.key === "Escape") {
-                    newGameDialog.returnValue = "cancel";
-                } else if (e.key === "Enter") {
-                    e.preventDefault();
-                    okBtn.dispatchEvent(clickEvent);
-                };
+                    newGameDialog.close("cancel");
+                }
             };
-            window.addEventListener("keydown", dialogEscapeAndEnterBtns);
+            window.addEventListener("keydown", dialogEscapeBtn);
             cancelBtn.addEventListener("click", (e) => {
                 e.preventDefault();
                 newGameDialog.close("cancel");
             });
             okBtn.addEventListener("click", defaultPlayerNames);
             newGameDialog.addEventListener("close", () => {
-                window.removeEventListener("keydown", dialogEscapeAndEnterBtns);
+                window.removeEventListener("keydown", dialogEscapeBtn);
                 if (newGameDialog.returnValue === "cancel") {
                     p1NameInput.value = '';
                     p2NameInput.value = '';
